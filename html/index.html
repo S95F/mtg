@@ -1,0 +1,93 @@
+<html lang="en">
+	
+	
+	<head>
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="./js/main.js" type="module"></script>
+		<link rel="stylesheet" href="./css/main.css">
+		<link rel="stylesheet" href="./css/slide.css">
+		<link rel="stylesheet" href="./css/login.css">
+		<link rel="stylesheet" href="./css/deckbuilder.css">
+		<title>Magic: The Gathering Deck Builder</title>
+	</head>
+	<body>
+		<div id="container">
+			<div class="frames" id="frame0">
+				<div class="header">
+					<div class="loginButtons" id="loginCtrlr">
+						<input class="headerbuttons" type="button" id="loginMain" value="login">
+					</div>
+				</div>
+				<div class="frameBodys" id="frame0body">
+					<div id="dI">
+						<div id="dIh">
+							<input class="dIh_b" id="dIh_add"type="button" tt="Add new deck">
+							<input class="dIh_b" id="dIh_save"type="button" tt="Save">
+							<input class="dIh_b" id="dIh_export"type="button" tt="Export">
+							<input class="dIh_b" id="dIh_delete"type="button" tt="Delete">
+						</div>
+						<div id="dIb">
+						</div>
+					</div>
+					<div id="cSI">
+						<div id="Search">
+							<input type="text" id="search">
+							<input type="button" id="searchBtn" value="Search">
+						</div>
+						<div id="SearchOP">
+						
+						</div>
+						<div id="SearchPaging">
+							<input class="cSI_b" id="pageLeft" type="button">
+							<div class="cSI_i" id="currPage"contenteditable=false>0</div>
+							<input class="cSI_b" id="pageRight" type="button">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="frames" id="frame1">
+				<div class="header lheader">
+					<div id="backButtons">
+						<input class="backButtons" type="button" id="backbutt" value="< Back">
+					</div>
+				</div>
+				<div id="formHolder">
+					<form id="login-account-form">
+						<div>
+							<h1>Welcome!</h1>
+						</div>
+						<div>
+							<label for="Email">Email:</label>
+							<input type="text" id="lemail" name="lemail" required>
+						</div>
+						<div>
+							<label for="lpassword">Password:</label>
+							<input type="password" id="lpassword" name="lpassword" required>
+						</div>
+							<button type="submit" id="lbtn">Login</button>
+							<button id="cabtn">Create Account</button>
+					</form>
+					<form id="create-account-form">
+						<div>
+							<h1>Create Account:</h1>
+						</div>
+						<div>
+							<label for="caemail">Email:</label>
+							<input type="email" id="caemail" name="caemail" required>
+						</div>
+						<div>
+							<label for="password">Password:</label>
+							<input type="password" id="capassword" name="password" required>
+						</div>
+						<div>
+							<label for="confirm-password">Confirm Password:</label>
+							<input type="password" id="confirmpassword" name="confirm-password" required>
+						</div>
+						<button type="submit">Create Account</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+

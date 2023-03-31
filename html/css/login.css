@@ -1,0 +1,73 @@
+@font-face {
+ font-family: 'Unbounded';
+ src: url('../fonts/Unbounded-VariableFont_wght.ttf');
+}
+
+.backButtons{
+	align-self:center;
+	margin:0;
+	background-color:rgba(0,0,0,0);
+	color:white;
+	font-family:Unbounded;
+	text-decoration:none;
+	border:none;
+	transition:1s;
+	font-size:1em;
+	height:5vh;
+}
+.backButtons:hover{
+	font-size:1.25em;
+}
+
+#formHolder{
+	height:95vh;
+	display: flex;
+	flex-direction:column;
+	flex-wrap: nowrap;
+	align-items: center;
+	justify-content: start;
+	font-family:Unbounded;
+	color:white;
+}
+
+#formHolder > form{
+	display:flex;
+	flex-direction:column;
+	justify-content:center;
+	align-content:center;
+	min-height:95vh;
+	flex-wrap:none;
+	transition: 0.5s ease-out;
+	overflow:hidden;
+}
+#formHolder > form > div > h1 {
+	justify-content:center;
+	display:flex;
+	flex-direction:column;
+	text-align:center;
+	min-width:100%;
+}
+#formHolder > form > div{
+	display:flex;
+	flex-direction:row;
+	justify-content:flex-end;
+}
+#formHolder > form > div > input{
+	display:flex;
+}
+#formHolder > form > button{
+	align-self:center;
+	margin:0;
+	background-color:rgba(0,0,0,0);
+	color:white;
+	font-family:Unbounded;
+	text-decoration:none;
+	border:none;
+	transition:1s;
+	font-size:1.25em;
+}
+#formHolder > form > button:hover{
+	font-size:1.5em;
+}
+
+

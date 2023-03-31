@@ -1,0 +1,159 @@
+
+
+#dI{
+	max-width:22vw;
+}
+
+
+#dIb {
+  display: flex;
+  flex-direction: column;
+  font-family: 'Unbounded';
+  justify-content: flex-start;
+  max-width:23vw;
+  max-height:90vh;
+  align-self:flex-end;
+  overflow:hidden;
+  flex-grow:27;
+  background:rgba(0,0,0,.5);
+  width:100%;
+}
+
+#dIb > * {
+  font-size:1.5em;
+  color:white;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content:right;
+}
+#dIb > * > * {
+  font-family:inherit;
+}
+
+#dIb > * > input {
+	background-color: transparent;
+	color: white;
+	border: none;
+	transition:.5s;
+	max-width:3vw;
+	font-size:1em;
+}
+.deckContainer{
+	display:flex;
+	flex-wrap:wrap;
+	flex-basis:100%;
+	justify-content:right;
+	overflow:hidden;
+}
+.deckContainer > *{
+	flex-basis:100%;
+	justify-content:right;
+	text-align:right;
+	font-size:.5em;
+}
+#dIb > * > .green:hover{
+	transform:scale(115%);
+	color:green;
+}
+#dIb > * > .red:hover{
+	transform:scale(125%);
+	color:red;
+}
+
+#Search{
+	with:100%;
+}
+#Search > input[type='text']{
+	width:95%;
+	border:none;
+	border-bottom:solid 2.5px;
+	color:white;
+	background-color:transparent;
+	font-family: 'Unbounded';
+	font-size:2em;
+}
+#Search > input[type='button']{
+	background-color: transparent;
+	color: white;
+	border: none;
+	transition:.5s;
+	font-size:1em;
+}
+
+#Search > input[type='button']:hover{
+	transform:scale(115%);
+	color:orange;
+}
+#SearchOP{
+	height:82.5vh;
+	display: flex;
+	flex-wrap: wrap;
+	width:80vw;
+	justify-content:space-around;
+	align-content:space-around;
+}
+
+#SearchPaging{
+	display:flex;
+	flex-direction:row;
+	justify-content:center;
+	align-content:center;
+}
+#currPage{
+	font-family:'Unbounded';
+	color:white;
+	height:10vh;
+	font-size:8bh;
+	display:flex;
+	justify-content:center;
+	flex-direction:column;
+	align-content:center;
+	font-size:2em;
+	margin-right:8px;
+}
+
+.cSI_b{
+	background-size: contain;
+	background-repeat: no-repeat;
+	height:8vh;
+	width:5vw;
+	background-color:transparent;
+	border:none;
+	transition:1s;
+}
+#pageLeft{
+	background-image:url('../svg/larrow.svg');
+}
+#pageRight{
+	background-image:url('../svg/rarrow.svg');
+}
+.cSI_b:hover{
+	transform: scale(1.2);
+}
+
+.cardcontainer {
+  max-height: 320px;
+  max-width:235px;
+  flex-basis: calc(100% / 3);
+  display:flex;
+  flex-direction:row;
+  overflow:hidden;
+  flex-wrap: nowrap;
+}
+
+.cardcontainer img {
+  z-index: 1;
+  max-height: 320px;
+  max-width:228px;
+  box-sizing: border-box;
+  transition:1s;
+}
+
+.draggable{
+	height:20px;
+	width:20px;
+	background-color:black;
+	z-index:50;
+}
+
+

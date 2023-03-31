@@ -1,0 +1,193 @@
+
+:root{
+	--bgcolor:#000B67;
+	--accentcolor:#0131AF;
+	--secaccentcolor:#00095F;
+	--thiraccentcolor:#063970;
+	--headerimg:url('../imgs/swirly.png');
+	--bdyimg:url('../imgs/mtgbg.png');
+}
+@font-face {
+ font-family: 'Unbounded';
+ src: url('../fonts/Unbounded-VariableFont_wght.ttf');
+}
+
+
+body{
+	margin:0;
+	font:Unbounded;
+	overflow:hidden;
+	height:100vh;
+	width:100vw;
+}
+
+.frames{
+	height:100vh;
+	width:100vw;
+	background-image: var(--headerimg);
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center;
+	display:flex;
+	position:relative;
+	flex-direction:column;
+	justify-content:flex-start;
+}
+
+.frameBodys{
+	width:100%;
+	height:95vh;
+	overflow:hidden;
+}
+
+.header{
+	width:100vw;
+	height:5vh;
+	background-color:rgba(0,0,0,0);
+}
+
+.loginButtons{
+	display:flex;
+	justify-content:flex-end;
+	height:100%;
+	width:100%;
+}
+
+.headerbuttons{
+	height:100%;
+	width:5vw;
+	background:rgba(0,0,0,0);
+	border-style:none;
+	font-family:"Unbounded";
+	color:white;
+	font-size:min(1.5vh,1.5vw);
+	transition:1s;
+}
+.headeritems{
+	height:100%;
+	background:rgba(0,0,0,0);
+	font-family:"Unbounded";
+	color:white;
+	font-size:min(1.5vh,1.5vw);
+	transition:1s;
+	display:flex;
+	align-items:center;
+}
+.headerbuttons:hover{
+	font-size:min(1.8vh,1.8vw);
+}
+
+#frame0body{
+	display:flex;
+	align-content:stretch;
+	flex-direction:row;
+}
+
+#dI{
+	background:rgba(0,0,0,0);
+	flex-grow:1;
+	display:flex;
+	flex-direction:column;
+	align-content:stretch;
+	min-width:20vw;
+	z-index:5;
+}
+#dIh{
+	background-color:rgba(0,0,0,0);
+	width:100%;
+	min-height:7.5vh;
+	max-height:7.5vh;
+	flex-grow:1;
+	display:flex;
+	flex-direction:row;
+	justify-content:start;
+}
+.dIh_b{
+	background-color:rgba(0,0,0,0);
+	border:none;
+	width:3vw;
+	height:3vw;
+	transition: transform 1s;
+	background-size: contain;
+	background-repeat: no-repeat;
+	margin-top:1vh;
+}
+.dIh_b:hover{
+	transform: translateY(-1vh);
+}
+
+#dIh_add{
+	background-image:url('../svg/add.svg');
+	filter: invert(100%);
+}
+#dIh_save{
+	background-image:url('../svg/floppy.svg');
+}
+#dIh_export{
+	background-image:url('../svg/export.svg');
+}
+#dIh_delete{
+	background-image:url('../svg/delete.svg');
+	filter: invert(100%);
+}
+#cSI{	
+	flex-grow:4;
+	background-image: var(--bdyimg);
+	background-size: cover;
+	background-repeat: no-repeat;
+}
+/* Define a gradient with rainbow colors */
+@keyframes rainbow {
+  0% {
+    color: #ff0000; /* Red */
+  }
+  16.666% {
+    color: #ff7f00; /* Orange */
+  }
+  33.333% {
+    color: #ffff00; /* Yellow */
+  }
+  50% {
+    color: #00ff00; /* Green */
+  }
+  66.666% {
+    color: #0000ff; /* Blue */
+  }
+  83.333% {
+    color: #4b0082; /* Indigo */
+  }
+  100% {
+    color: #9400d3; /* Violet */
+  }
+}
+
+/* Apply the gradient to the text */
+.rainbow-text {
+  -webkit-animation: rainbow 4s ease infinite;
+  animation: rainbow 4s ease infinite;
+  transition-timing-function: ease;
+  transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+@keyframes pulse {
+	0% {
+		color: #00FF7F;
+		text-shadow: 0 0 10px #00FF7F;
+	}
+	50% {
+		color: #228B22;
+		text-shadow: 0 0 20px #228B22;
+	}
+	100% {
+		color: #00FF7F;
+		text-shadow: 0 0 10px #00FF7F;
+	}
+}
+.tt{
+	position:absolute;
+	font-family:"Unbounded";
+	color: #00FF7F;
+	text-shadow: 0 0 10px #00FF7F;
+	animation: pulse 2s linear infinite;
+	bottom:1vh;
+	right:-3vw;
+}	
