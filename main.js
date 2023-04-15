@@ -11,9 +11,7 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 
-console.log("⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆");
 var htmlPath = path.join(__dirname, 'html');
-console.log(htmlPath);
 
 //route functions 
 io.dbroutines = require('./routes/dbroutines.js')();
