@@ -36,5 +36,5 @@ io.on('connection', (socket) => {
 });
 
 
-//app.use(serveStatic(htmlPath));
-server.listen();
+app.use(serveStatic(htmlPath));
+server.listen(80);
