@@ -97,7 +97,7 @@ module.exports = (io) => {
 			io.dbroutines.execSql('select * from settings where setting = "updated"',[]).then(r => {
 				if((r == undefined || r.length == 0) || (r && new Date(r[0]['setting val']).getTime() < upDatedLast.getTime())){
 					updateMTGlocalLib(io,parts.slice(0, 3).join('/').slice(8), '/' + parts.slice(3).join('/'));
-					if(r != undefined && r.length == 0){
+					if(r == undefined || r.length == 0){
 						io.dbroutines.execSql("insert into settings values (?,?)",["updated",upDatedLast.getTime()]).then((r) => r);
 					}else{
 						io.dbroutines.execSql("update settings set setting_val = '?' where setting = ?",[upDatedLast.getTime(),"updated"]).then((r) => r);
