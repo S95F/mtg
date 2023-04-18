@@ -24,7 +24,10 @@ const updateMTGlocalLib = async function(io,inhn,inpath){
 		timeout:2147483647,
 	};
 	(async() => {
-	  await io.dbroutines.execSql("delete from cards",[]);
+	  await io.dbroutines.execSql("delete from cards",[]).catch((error) => {
+			console.error(error);
+			continue;
+		});
 	})();
 	const req = https.request(options, res => {
 		let data = '';
