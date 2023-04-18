@@ -91,6 +91,7 @@ module.exports = () => {
 
 	const validateDB = function(){
 		var results = {};
+		execSql("ALTER DATABASE " + con.config.database + " CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;",[]);
 		var data = new Promise(function (res, rej) {
 			fs.readFile('dbconfig.json', 'utf8' , (err, data) => {
 				if (err) {
