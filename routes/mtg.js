@@ -25,8 +25,6 @@ const updateMTGlocalLib = async function(io,inhn,inpath){
 	};
 	(async() => {
 	  await io.dbroutines.execSql("delete from cards",[]);
-	}).catch((error) => {
-			console.error(error);
 	});
 	const req = https.request(options, res => {
 		let data = '';
