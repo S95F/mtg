@@ -91,6 +91,7 @@ module.exports = (io) => {
 			const bulkData = JSON.parse(data);
 			const fbd = bulkData.data.filter(l => {return l.type === 'default_cards'});
 			const upDatedLast = new Date(fbd[0].updated_at);
+			const parts = fbd[0].download_uri.split('/');
 			io.dbroutines.execSql('select * from settings where setting = "updated"',[]).then(r => {
 				if(r.length == 0 || (r && new Date(r[0]['setting val']).getTime() < upDatedLast.getTime())){
 					if(r.length == 0){
@@ -98,10 +99,13 @@ module.exports = (io) => {
 					}else{
 						io.dbroutines.execSql("update settings set setting_val = '?' where setting = ?",[upDatedLast.getTime(),"updated"]).then((r) => r);
 					}
-					const parts = fbd[0].download_uri.split('/');
+					
 					updateMTGlocalLib(io,parts.slice(0, 3).join('/').slice(8), '/' + parts.slice(3).join('/'));
 				}
-			});
+			}).catch((error) => {
+				console.error(error);
+				updateMTGlocalLib(io,parts.slice(0, 3).join('/').slice(8), '/' + parts.slice(3).join('/'));
+				});
 		  });
 		});
 
