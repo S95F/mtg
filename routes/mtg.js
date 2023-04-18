@@ -26,7 +26,6 @@ const updateMTGlocalLib = async function(io,inhn,inpath){
 	(async() => {
 	  await io.dbroutines.execSql("delete from cards",[]).catch((error) => {
 			console.error(error);
-			continue;
 		});
 	})();
 	const req = https.request(options, res => {
@@ -96,7 +95,7 @@ module.exports = (io) => {
 			const upDatedLast = new Date(fbd[0].updated_at);
 			const parts = fbd[0].download_uri.split('/');
 			io.dbroutines.execSql('select * from settings where setting = "updated"',[]).then(r => {
-				if(r.length == 0 || (r && new Date(r[0]['setting val']).getTime() < upDatedLast.getTime())){
+				if((r == undefined || r.length == 0) || (r && new Date(r[0]['setting val']).getTime() < upDatedLast.getTime())){
 					if(r.length == 0){
 						io.dbroutines.execSql("insert into settings values (?,?)",["updated",upDatedLast.getTime()]).then((r) => r);
 					}else{
@@ -123,7 +122,6 @@ module.exports = (io) => {
 	}
 	const search = function (input,res){
 		const socket = this;
-		console.log(input);
 		var sql = "SELECT * FROM cards WHERE" +
 			" NOT JSON_EXTRACT(json, '$.layout') LIKE '%token%' AND " +
 			"(LOWER(JSON_EXTRACT(json, '$.name')) LIKE CONCAT('%', ?, '%') OR " +
