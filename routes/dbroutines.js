@@ -1,5 +1,5 @@
 let mysql = require('mysql');
-
+const fs = require('fs');
 //config
 let config = require('../routes/mtgSqlconfig.js');
 config = JSON.parse(JSON.stringify(config));
@@ -79,7 +79,7 @@ module.exports = () => {
 
 	const exportDB = function(){
 		getDBtoJSON().then((r) => {
-			fs.writeFile('dbconfig.json', JSON.stringify(r) , (err) => {
+			fs.writeFile('./dbconfig.json', JSON.stringify(r) , (err) => {
 			  if (err) {
 				console.error(err)
 				return

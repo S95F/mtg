@@ -20,7 +20,7 @@ io.mtg.init();
 io.mtgsave = require('./routes/mtgsave.js')(io);
 io.login = require('./routes/login.js')(io);
 
-
+io.dbroutines.validateDB();
 
 io.on('connection', (socket) => {
   console.log('a user connected');
@@ -36,3 +36,4 @@ io.on('connection', (socket) => {
 
 app.use(serveStatic(htmlPath));
 server.listen(4223);
+console.log("open");
