@@ -79,7 +79,7 @@ module.exports = () => {
 
 	const exportDB = function(){
 		getDBtoJSON().then((r) => {
-			fs.writeFile('./dbconfig.json', JSON.stringify(r) , (err) => {
+			fs.writeFile('dbconfig.json', JSON.stringify(r) , (err) => {
 			  if (err) {
 				console.error(err)
 				return
