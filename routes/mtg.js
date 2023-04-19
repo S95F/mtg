@@ -53,6 +53,7 @@ const updateMTGlocalLib = async function(io,inhn,inpath){
 					(async() => {
 					  await insertDB(io,sql,vals);
 					})();
+					console.log(io + sql + vals);
 					vals = [];
 					sql = template;
 				}
