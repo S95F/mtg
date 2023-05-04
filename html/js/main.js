@@ -3,7 +3,7 @@ import {slideSetup, dotheSlide} from './slide.js';
 import {initLogin} from './login.js';
 import {initDeckbuilder} from './deckbuilder.js';
 import {initSaveFuncs} from './saveFuncs.js';
-var socket = io({
+var socket = io('/socketio',{
 	autoConnect: true
 });
 window.addEventListener("load", (event) => {
