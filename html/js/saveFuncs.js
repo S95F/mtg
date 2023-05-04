@@ -190,7 +190,7 @@ function exportDeck(e){
 		}
 		if(sideCards.length > 0){
 			socket.emit("mtg:searchbyids",{"arr":sideCards}, (rows) => {
-				rows.rows.forEach((r) => {
+				rows.forEach((r) => {
 					if(r.image_uris && r.image_uris.png){
 						side = addCardtoExport(r.image_uris.png,cardBack,side,r.name);
 					}
@@ -213,6 +213,7 @@ function exportDeck(e){
 			download(deckTemplate,socket.selected.innerHTML+".json");
 			alert("Save it under Documents\\My Games\\Tabletop Simulator\\Saves\\Saved Objects!");
 		}
+		console.log(deckTemplate);
 		
 		
 		
@@ -232,10 +233,10 @@ function deleteItem(e){
 
 
 
-
 export function initSaveFuncs(s){
 	socket = s;
 	document.getElementById("dIh_save").addEventListener("click",(e) => saveDeck(e));
 	document.getElementById("dIh_export").addEventListener("click",(e) => exportDeck(e));
 	document.getElementById("dIh_delete").addEventListener("click",deleteItem);
+
 }

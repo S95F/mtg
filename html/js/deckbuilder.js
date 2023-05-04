@@ -1,5 +1,8 @@
 
 
+import {setAttributes} from './login.js';
+
+
 var socket = null;
 var st = null;
 
@@ -146,7 +149,7 @@ function search(e,s=false,p=false){
 		socket.emit("mtg:search",obj,(r) => {
 			var SearchOP = document.getElementById("SearchOP");
 			r.rows.length>0?SearchOP.innerHTML = "":false;
-			document.getElementById("currPage").innerHTML = r.rows.length===0?document.getElementById("currPage").innerHTML:r.page;
+			document.getElementById("currPage").innerHTML = r.p;
 			r.rows.length>0?(socket.batch = r.rows):false;
 			r.rows.forEach(i => {
 				var container = document.createElement("div");
@@ -185,8 +188,8 @@ function search(e,s=false,p=false){
 						newEle2.addEventListener("dragstart", (e) => dragEle(e,container));
 					}	
 				}
-				newEle.addEventListener("dragstart", (e) => dragEle(e,container));
 				container.setAttribute('id',i.id);
+				newEle.addEventListener("dragstart", (e) => dragEle(e,container));
 				SearchOP.appendChild(container);
 			});
 		});
@@ -264,4 +267,74 @@ export function initDeckbuilder(s){
 		});
 		b.addEventListener("mouseout",mouseEnd);
 	});
+
+    document.getElementById('dIh_upload_file').addEventListener('change', (event) => {
+      const file = event.target.files[0];
+
+      if (!file) {
+        console.error('No file selected.');
+        return;
+      }
+
+      if (!file.name.endsWith('.txt')) {
+        console.error('Please select a text file with a .txt extension.');
+        return;
+      }
+
+      const reader = new FileReader();
+
+      reader.onload = (event) => {
+			var input = event.target.result.split('\r\n');
+			input = input.filter((f) => f != '');
+			console.log(input);
+			socket.emit("mtg:searchbynames",{'arr':input},(ret) => {
+				if(Array.isArray(ret)){
+					var deck = makeDeck(socket);
+					const dibContainer = document.getElementById("dIb");
+					dibContainer.appendChild(deck);
+					var p = Array.prototype.slice.call(deck.children).filter((e) => e.classList.contains('deckContainer'))[0];
+					var expando = Array.prototype.slice.call(deck.children).filter((e) => e.classList.contains('deckExpandBtn'))[0];
+					var name = Array.prototype.slice.call(deck.children).filter((e) => e.classList.contains('decks'))[0];
+					expando.value = '--';
+					expando.classList.remove('green');
+					expando.classList.add('red');
+					name.innerHTML = input[0];
+					ret.forEach(c => {
+						var ne = document.createElement("div");
+						ne.innerHTML = c.name;
+						if('allparts' in c){
+							ne.setAttribute('allparts', JSON.stringify(c['allparts']));
+						}
+						ne.classList.add("card");
+						ne.addEventListener('click',(e) => selectThis(e,ne,socket));
+						p.appendChild(ne);
+						ne.style.zindex=10;
+						ne.setAttribute('name',c.name);
+						ne.setAttribute('qty',1);
+						if(c.all_parts != undefined){
+							ne.setAttribute('allparts',JSON.stringify(c.all_parts));
+						}
+						if(c.image_uris){
+							ne.setAttribute('frontFace',c.image_uris.png);
+						}else{
+							if(c.card_faces[0].image_uris){
+								ne.setAttribute('frontFace',c.card_faces[0].image_uris.png);
+								ne.setAttribute('name',c.card_faces[0].name);
+							}
+							if(i.card_faces[1].image_uris){
+								ne.setAttribute('backFace',c.card_faces[1].image_uris.png);
+								ne.setAttribute('backname',c.card_faces[1].name);
+								ne.addEventListener("dblclick", (e) => toggleImg(ne,e));	
+							}	
+						}
+						ne.setAttribute('id',c.id);
+					});
+				}
+				document.getElementById('dIh_upload_file').value = null;
+			});
+			
+      };
+
+      reader.readAsText(file);
+    });
 }

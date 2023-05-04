@@ -36,7 +36,9 @@ module.exports = () => {
   }).catch((err) => {
 	  con.end();
 	  con = mysql.createConnection(config);
-	  console.log(err);
+	  //console.log(err);
+	  //console.log(Object.keys(err));
+	  console.log(err.sqlMessage);
 	});
 }
 

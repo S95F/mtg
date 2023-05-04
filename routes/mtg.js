@@ -1,161 +1,139 @@
 
-const https = require('https');
-const zlib = require('zlib');
+//const https = require('https');
+//const zlib = require('zlib');
+//const JSONStream = require('JSONStream');
+const request = require('request');
 
 
+const MIN_REQUEST_DELAY_MS = 110; // minimum delay in milliseconds between API requests
+let lastRequestTime = 0; // the timestamp of the last API request
 
-const insertDB = async function(io,sql,vals) {
-  try {
-    const result = io.dbroutines.execSql(sql.substring(0,sql.length-6), vals);
-  } catch (error) {
-    console.log(error);
+async function delayRequest() {
+  const now = Date.now();
+  const elapsed = now - lastRequestTime;
+
+  if (elapsed < MIN_REQUEST_DELAY_MS) {
+    await new Promise((resolve) => setTimeout(resolve, MIN_REQUEST_DELAY_MS - elapsed));
   }
+
+  lastRequestTime = Date.now(); // update the timestamp of the last API request
+  return Promise.resolve();
 }
-
-const updateMTGlocalLib = async function(io,inhn,inpath){
-	var options = {
-		hostname:inhn,
-		path:inpath,
-		metho:'GET',
-		headers: {
-			'Content-Type': 'application/json',
-			'Accept-Encoding':'gzip',
-		},
-		timeout:2147483647,
-	};
-	(async() => {
-	  await io.dbroutines.execSql("delete from cards",[]);
-	});
-	const req = https.request(options, res => {
-		let data = '';
-		const encoding = res.headers['content-encoding'];
-		let stream = res;
-		// Accumulate the response data
-		if (encoding === 'gzip') {
-			stream = res.pipe(zlib.createGunzip()); // decode gzip-encoded response
-		}
-		stream.on('data', (chunk) => {
-			data += chunk;
-		});
-		stream.on('end', () => {
-			var bData = JSON.parse(data);
-			var sql = 'insert into cards values (?,?)';
-			var template = sql;
-			var vals = [];
-			while(0 < bData.length){
-				vals.push(bData[0].id);
-				delete bData[0].uri;
-				delete bData[0].prices;
-				vals.push(JSON.stringify(bData[0]));
-				sql += ',(?,?)'
-				bData.splice(0,1);
-				if(vals.length == 6){
-					(async() => {
-					  await insertDB(io,sql,vals);
-					})();
-					console.log(io + sql + vals);
-					vals = [];
-					sql = template;
-				}
-			}
-			
-		});
-	});
-	req.setTimeout(options.timeout);
-	req.end();
-}			
-
-
 
 
 module.exports = (io) => {
-	const init = function (){
-		const options = {
-		  hostname: 'api.scryfall.com',
-		  path: '/bulk-data',
-		  method: 'GET',
-		  headers: {
-			'Content-Type': 'application/json',
-		  },
-		};
-		// Make the request
-		const req = https.request(options, res => {
-		  let data = '';
 
-		  // Accumulate the response data
-		  res.on('data', chunk => {
-			data += chunk;
-		  });
-
-		  // Parse the JSON response when the request is complete
-		  res.on('end', () => {
-			const bulkData = JSON.parse(data);
-			const fbd = bulkData.data.filter(l => {return l.type === 'default_cards'});
-			const upDatedLast = new Date(fbd[0].updated_at);
-			const parts = fbd[0].download_uri.split('/');
-			io.dbroutines.execSql('select * from settings where setting = "updated"',[]).then(r => {
-				if((r == undefined || r.length == 0) || (r && new Date(r[0]['setting val']).getTime() < upDatedLast.getTime())){
-					(async() => {
-					  await updateMTGlocalLib(io,parts.slice(0, 3).join('/').slice(8), '/' + parts.slice(3).join('/'));
-					})();
-					if(r == undefined || r.length == 0){
-						io.dbroutines.execSql("insert into settings values (?,?)",["updated",upDatedLast.getTime()]).then((r) => r);
-					}else{
-						io.dbroutines.execSql("update settings set setting_val = '?' where setting = ?",[upDatedLast.getTime(),"updated"]).then((r) => r);
-					}
-				}
-			}).catch((error) => {
-				console.error(error);
-				updateMTGlocalLib(io,parts.slice(0, 3).join('/').slice(8), '/' + parts.slice(3).join('/'));
-				});
-		  });
-		});
-
-		// Handle any errors that occur during the request
-		req.on('error', error => {
-		  console.error(error);
-		});
-
-		// Send the request
-		req.end();
-		//io.dbroutines.execSql.(""
-	}
 	const search = function (input,res){
 		const socket = this;
-		var sql = "SELECT * FROM cards WHERE" +
-			" NOT JSON_EXTRACT(json, '$.layout') LIKE '%token%' AND " +
-			"(LOWER(JSON_EXTRACT(json, '$.name')) LIKE CONCAT('%', ?, '%') OR " +
-			"LOWER(JSON_EXTRACT(json, '$.set')) LIKE CONCAT('%', ?, '%') OR " +
-			"LOWER(JSON_EXTRACT(json, '$.set_name')) LIKE CONCAT('%', ?, '%') OR " +
-			"LOWER(JSON_EXTRACT(json, '$.oracle_text')) LIKE CONCAT('%', ?, '%')) LIMIT 12";
-		if(input.p){
-			sql += " OFFSET " + (input.p * 12).toString();
-		}
-		const values = [input.s.toLowerCase(), input.s.toLowerCase(), input.s.toLowerCase(), input.s.toLowerCase()];
-		var ret = [];
-		io.dbroutines.execSql(sql,values).then(r => {
-			r.forEach(re => {
-				ret.push(JSON.parse(re.json));
+
+		const pageSize = 12; // the number of results to return per page
+		input.p = input.p!=undefined?input.p:1;
+		let gpage = input.p;
+		function fuzzySearch(query) {
+		  const options = {
+			url: 'https://api.scryfall.com/cards/search',
+			qs: {
+			  q: query,
+			  fuzzy: true,
+			},
+		  };
+
+		  let allRows = []; // array to store all rows
+		  function fetchPage(page) {
+			return delayRequest().then(() => {
+			  options.qs.page = page;
+			  return new Promise((resolve, reject) => {
+				request(options, (error, response, body) => {
+				  if (error) {
+					reject(error);
+				  } else {
+					const data = JSON.parse(body);
+					allRows = allRows.concat(data.data);
+
+					if (data.has_more && allRows.length < pageSize * page) {
+					  fetchPage(page + 1).then(resolve).catch(reject);
+					} else {
+					  const start = pageSize * (page - 1);
+					  const end = Math.min(pageSize * page, allRows.length);
+					  const rows = allRows.slice(start, end);
+
+					  resolve(rows);
+					}
+				  }
+				});
+			  });
 			});
-			res({"rows":ret,"page":!input.p?0:input.p});
-		});
+		  }
+
+		  return fetchPage(1);
+		}
+		fuzzySearch(input.s).then((r) => {
+			r.length === 0 && input.p > 1?input.p--:false;
+			res({'rows':r,'p':input.p});
+		}).catch((err) => console.log(err));
+		
 	}
 	const searchbyids = function (input,res){
 		const socket = this;
-		var sql = "SELECT * FROM cards WHERE idcards in ("
-		input.arr.forEach((e) => sql += "?,");
-		sql = sql.substring(0,sql.length-1) + ");";
-		var ret = [];
-		io.dbroutines.execSql(sql,input.arr).then(r => {
-			r.forEach(re => {
-				ret.push(JSON.parse(re.json));
+		function searchCardsByIds(ids) {
+			var options = {
+				uri: `https://api.scryfall.com/cards/collection`,
+				method: 'POST',
+				json:true,
+				body:{
+					"identifiers":[]
+				}
+			}
+			ids.forEach(i => options.body.identifiers.push({"id":i}));
+			console.log(options);
+			return delayRequest().then(() => {
+			  return new Promise((resolve, reject) => {
+				request(options, (err, res, body) => {
+				  if (err) {
+					reject(err);
+				  } else {
+					lastRequestTime = Date.now(); // update the timestamp of the last API request
+					resolve(body);
+				  }
+				});
+			  });
 			});
-			res({"rows":ret});
+		}
+		searchCardsByIds(input.arr).then((r) => {
+			res(r.data);
+			console.log(r.data);
+		}).catch(err => console.log(err));
+	}
+	const searchbynames = function (input,res){
+		const socket = this;
+		const searchCards = (names) => {
+		  const promises = names.map((name) => {
+			return delayRequest().then(() => {
+			  return new Promise((resolve, reject) => {
+				request(`https://api.scryfall.com/cards/named?fuzzy=${encodeURIComponent(name)}`, (error, response, body) => {
+				  if (error) {
+					reject(error);
+				  } else {
+					resolve(JSON.parse(body));
+				  }
+				});
+			  });
+			});
+		  });
+		  
+		  return Promise.all(promises);
+		};
+		searchCards(input.arr).then((cards) => {
+			res(cards);
+		  }).catch((error) => {
+			console.error(error);
+			res(error);
 		});
+		
 	}
 	return{
-		init,
 		search,
-		searchbyids
+		searchbyids,
+		searchbynames
 	}
 }

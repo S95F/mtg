@@ -61,7 +61,7 @@ function createAccount(socket,e){
       }
     });
 }
-function setAttributes(element, attributes) {
+export function setAttributes(element, attributes) {
   for (const key in attributes) {
     element.setAttribute(key, attributes[key]);
   }

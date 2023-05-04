@@ -130,6 +130,10 @@ body{
 	background-image:url('../svg/delete.svg');
 	filter: invert(100%);
 }
+#dIh_upload{
+	background-image:url('../svg/upload.svg');
+	filter: invert(100%);
+}
 #cSI{	
 	flex-grow:4;
 	background-image: var(--bdyimg);

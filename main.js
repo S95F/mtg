@@ -16,7 +16,7 @@ var htmlPath = path.join(__dirname, 'html');
 //route functions 
 io.dbroutines = require('./routes/dbroutines.js')();
 io.mtg = require('./routes/mtg.js')(io);
-io.mtg.init();
+//io.mtg.init();
 io.mtgsave = require('./routes/mtgsave.js')(io);
 io.login = require('./routes/login.js')(io);
 
@@ -28,6 +28,7 @@ io.on('connection', (socket) => {
   socket.on("login-account",io.login.loginAccount);
   socket.on("mtg:search",io.mtg.search);
   socket.on("mtg:searchbyids",io.mtg.searchbyids);
+  socket.on("mtg:searchbynames",io.mtg.searchbynames);
 
   socket.on("mtg:save",io.mtgsave.save);
   socket.on("mtg:load",io.mtgsave.load);

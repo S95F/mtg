@@ -66,7 +66,11 @@ module.exports = (io) => {
 						cb({"success":false});
 					}
 					else{
-						cb({"success":true,"data":JSON.parse(r[0].decks)});
+						try{
+							cb({"success":true,"data":JSON.parse(r[0].decks)})
+						}catch{
+							cb({"success":true,"data":[]})
+						}
 					}
 				}).catch((err) => console.log(err));
 			}else{
